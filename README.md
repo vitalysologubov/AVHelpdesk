@@ -3,7 +3,8 @@ AVHelpdesk - система обработки заявок с технолог�
 ## About 
 
 ## Using 
-
+* Flask
+* Python 3.8
 ## Installation and tests 
 
 ## Credentials 
