@@ -1,12 +1,15 @@
-# AVHelpdesk
+## About
 AVHelpdesk - система обработки заявок с технологией учёта рабочего времени.
-## About 
 
-## Using 
+## Using
 
-## Installation and tests 
+## Installation and tests
+Команды Makefile:
+- `init` - инициализация приложения;
+- `migrate`- миграция базы данных;
+- `fixture` - добавление фикстур в базу данных;
+- `run` - запуск приложения.
 
-## Credentials 
+## Credentials
 
-##License
-
+## License
