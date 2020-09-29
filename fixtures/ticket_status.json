@@ -1,0 +1,15 @@
+[
+    {
+        "model": "TicketStatus",
+        "records": [{
+            "status": "Назначена"
+        },
+        {
+            "status": "В работе"
+        },
+        {
+            "status": "Решена"
+        }
+        ]
+    }
+]
