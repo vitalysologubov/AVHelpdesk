@@ -1,17 +1,20 @@
-init:
-	@echo Initialize app
-	@FLASK_APP=webapp
+init-app:
+	@echo Initializing app
+	@export FLASK_APP=webapp
 
-migrate:
-	@echo Migrate database
-	@flask db stamp 3d9a8939b562
+run-app:	
+	@echo Runing app
+	@export FLASK_ENV=development && set FLASK_DEBUG=1 && flask run
+
+create-migrations:
+	@echo Creating migrations
+	@flask db stamp head
 	@flask db migrate -m "migrating tables"
+
+apply-migrations:
+	@echo Applying migrations 
 	@flask db upgrade
 
-fixture:
-	@echo Add fixtures
+add-fixtures:
+	@echo Adding fixtures
 	@python3 add_fixtures.py
-
-run:	
-	@echo Run app
-	@export FLASK_ENV=development && set FLASK_DEBUG=1 && flask run

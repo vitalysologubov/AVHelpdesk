@@ -2,6 +2,9 @@
     {
         "model": "TicketStatus",
         "records": [{
+            "status": "Не назначена"
+        },
+        {
             "status": "Назначена"
         },
         {
