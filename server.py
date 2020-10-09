@@ -9,7 +9,7 @@ def index():
 
 
 @app.route('/')
-def mail():
+def obtain_mail():
     messages = fetch_mail()
     output = ''
     if messages:
