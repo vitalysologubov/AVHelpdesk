@@ -20,6 +20,10 @@ def add_ticket(messages):
 
     for message in messages:
         client = get_or_create_client_by_email(message['author'], message['address'])
-        model = Ticket(id_client=client.id, subject=message['subject'], content=message['body'])
-        db.session.add(model)
-        db.session.commit()
+        task = Ticket(id_client=client.id, subject=message['subject'], content=message['body'])
+
+        try:
+            db.session.add(task)
+            db.session.commit()
+        except sqlalchemy.exc.OperationalError as error:
+            print(f'Не удалось создать заявку от {message["address"]} с темой {message["subject"]}: {error}')
