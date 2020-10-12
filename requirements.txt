@@ -1,7 +1,6 @@
 alembic==1.4.3
 amqp==5.0.1
 attrs==20.2.0
-alembic==1.4.3
 beautifulsoup4==4.9.2
 billiard==3.6.3.0
 celery==5.0.0
@@ -16,7 +15,6 @@ Flask-Migrate==2.5.3
 Flask-SQLAlchemy==2.4.4
 idna==2.10
 iniconfig==1.0.1
-Flask-WTF==0.14.3
 itsdangerous==1.1.0
 Jinja2==2.11.2
 kombu==5.0.2
