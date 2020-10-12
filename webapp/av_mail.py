@@ -23,7 +23,8 @@ def remove_tags(html_code):
 def decode_mail_header(raw_header):
     d = decode_header(raw_header)
     subject, encoding = d[0]
-    subject = subject.decode(encoding)
+    if encoding:
+        subject = subject.decode(encoding)
     return subject
 
 
@@ -36,39 +37,6 @@ def multipart(message):
             return multipart(payload)
     if result:
         return result
-
-
-def fetch_mail():
-    # https://www.dmosk.ru/instruktions.php?object=python-mail
-    msg_list = []
-    mail = get_mailbox_entity()
-    # search criteria https://gist.github.com/martinrusev/6121028
-    result, data = mail.search(None, "UNSEEN")
-
-    ids = data[0]
-    id_list = ids.split()
-    for email_id in id_list[::-1]:
-        result, data = mail.fetch(email_id, "(RFC822)")
-        raw_email = data[0][1]
-        raw_email_string = raw_email.decode('utf-8')
-        email_message = email.message_from_string(raw_email_string)
-        address = email.utils.parseaddr(email_message['From'])[1]
-        message_content = {
-            'headers': (
-                f"{address}",
-                f"{decode_mail_header(email_message['From'])}",
-                f"{email_message['Date']}",
-                f"{decode_mail_header(email_message['Subject'])}"
-            )
-        }
-        body = ''
-        if email_message.is_multipart():
-            for payload in email_message.get_payload():
-                body += multipart(payload)
-        else:
-            body = email_message.get_payload(decode=True).decode('utf-8')
-        message_content['body'] = remove_tags(body)
-        msg_list.append(message_content)
 
 
 def get_mailbox_entity():
@@ -135,7 +103,6 @@ def fetch_mail():
     for email_id in id_list:
         r_, message_data = mail.fetch(email_id, "(RFC822)")
         raw_email_message = message_data[0][1]
-        print(f'{raw_email_message=}')
         raw_email_message_string = raw_email_message.decode('utf-8')
         email_message = email.message_from_string(raw_email_message_string)
         address = email.utils.parseaddr(email_message['From'])[1]
@@ -148,4 +115,5 @@ def fetch_mail():
             body=body
         )
         msg_list.append(mcd)
+
     return msg_list
