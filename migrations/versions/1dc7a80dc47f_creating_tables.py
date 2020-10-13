@@ -25,7 +25,7 @@ def upgrade():
     sa.Column('email', sa.String(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_table('departament',
+    op.create_table('department',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
     sa.PrimaryKeyConstraint('id')
@@ -45,7 +45,7 @@ def upgrade():
     sa.Column('id_department', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('status', sa.Boolean(), nullable=False),
-    sa.ForeignKeyConstraint(['id_department'], ['departament.id'], ),
+    sa.ForeignKeyConstraint(['id_department'], ['department.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('ticket',
