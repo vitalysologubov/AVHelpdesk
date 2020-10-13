@@ -9,11 +9,11 @@ class Attachment(db.Model):
     """Вложения"""
 
     id = db.Column(db.Integer, primary_key=True)
-    id_ticket = db.Column(db.Integer, db.ForeignKey('message.id'), nullable=False)
+    id_message = db.Column(db.Integer, db.ForeignKey('message.id'), nullable=False)
     attachment = db.Column(db.String, nullable=False)
 
     def __repr__(self):
-        return f'id={self.id}, id_ticket={self.id_ticket}, attachment={self.attachment}'
+        return f'id={self.id}, id_ticket={self.id_message}, attachment={self.attachment}'
 
 
 class Client(db.Model):
@@ -28,7 +28,7 @@ class Client(db.Model):
         return f'id={self.id}, name={self.name}, organization={self.organization}, email={self.email}'
 
 
-class Departament(db.Model):
+class Department(db.Model):
     """Отделы"""
 
     id = db.Column(db.Integer, primary_key=True)
@@ -42,12 +42,12 @@ class Staff(db.Model):
     """Сотрудники"""
 
     id = db.Column(db.Integer, primary_key=True)
-    id_departament = db.Column(db.Integer, db.ForeignKey('departament.id'), nullable=False)
+    id_department = db.Column(db.Integer, db.ForeignKey('department.id'), nullable=False)
     name = db.Column(db.String, nullable=False)
     status = db.Column(db.Boolean, nullable=False)
 
     def __repr__(self):
-        return f'id={self.id}, id_departament={self.id_departament}, name={self.name}, status={self.status}'
+        return f'id={self.id}, id_department={self.id_department}, name={self.name}, status={self.status}'
 
 
 class Ticket(db.Model):
@@ -61,12 +61,12 @@ class Ticket(db.Model):
     created_date = db.Column(db.DateTime, nullable=True, default=datetime.now)
     subject = db.Column(db.String, nullable=False)
     comments = db.Column(db.String)
-    messages_ids = db.Column(db.String)
+    messages = db.relationship('Message', backref='ticket', lazy=True)
 
     def __repr__(self):
         return (f'id={self.id}, id_staff={self.id_staff}, id_client={self.id_client}, id_status={self.id_status}, '
                 f'id_urgency={self.id_urgency}, created_date={self.created_date}, subject={self.subject}, '
-                f'content={self.comments}, messages_ids={self.messages_ids}')
+                f'content={self.comments}')
 
 
 class TicketStatus(db.Model):
@@ -94,20 +94,16 @@ class Message(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     theme = db.Column(db.String, nullable=False)
-    id_client = db.Column(db.Integer, db.ForeignKey('client.id'), nullable=False)
+    id_client = db.Column(db.Integer, db.ForeignKey('client.id'), nullable=False),
+    id_ticket = db.Column(db.Integer, db.ForeignKey('ticket.id'), nullable=False)
     received_date = db.Column(db.Datetime, nullable=False)
     is_incoming = db.Column(db.Boolean, nullable=False)
     content = db.Column(db.String, nullable=False)
-    attachments_ids = db.Column(db.String, nullable=True)
+    attachments = db.relationship('Attachment', backref='message', lazy=True)
 
     def __repr__(self):
-        return f'id={self.id}, ' \
-               f'theme={self.theme}, ' \
-               f'id_client={self.id_client}, ' \
-               f'received_date={self.received_date}, ' \
-               f'is_incoming={self.is_incoming}, ' \
-               f'content={self.content}, ' \
-               f'attachments_ids={self.attachments_ids}'
+        return (f'id={self.id}', f'theme={self.theme}', f'id_client={self.id_client}',
+                f'received_date={self.received_date}', f'is_incoming={self.is_incoming}', f'content={self.content}')
 
 
 

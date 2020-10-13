@@ -42,10 +42,10 @@ def upgrade():
     )
     op.create_table('staff',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('id_departament', sa.Integer(), nullable=False),
+    sa.Column('id_department', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('status', sa.Boolean(), nullable=False),
-    sa.ForeignKeyConstraint(['id_departament'], ['departament.id'], ),
+    sa.ForeignKeyConstraint(['id_department'], ['departament.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('ticket',
@@ -65,9 +65,9 @@ def upgrade():
     )
     op.create_table('attachment',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('id_ticket', sa.Integer(), nullable=False),
+    sa.Column('id_message', sa.Integer(), nullable=False),
     sa.Column('attachment', sa.String(), nullable=False),
-    sa.ForeignKeyConstraint(['id_ticket'], ['ticket.id'], ),
+    sa.ForeignKeyConstraint(['id_message'], ['ticket.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
