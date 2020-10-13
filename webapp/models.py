@@ -9,7 +9,7 @@ class Attachment(db.Model):
     """Вложения"""
 
     id = db.Column(db.Integer, primary_key=True)
-    id_ticket = db.Column(db.Integer, db.ForeignKey('ticket.id'), nullable=False)
+    id_ticket = db.Column(db.Integer, db.ForeignKey('message.id'), nullable=False)
     attachment = db.Column(db.String, nullable=False)
 
     def __repr__(self):
@@ -60,12 +60,13 @@ class Ticket(db.Model):
     id_urgency = db.Column(db.Integer, db.ForeignKey('ticket_urgency.id'), nullable=False, default=2)
     created_date = db.Column(db.DateTime, nullable=True, default=datetime.now)
     subject = db.Column(db.String, nullable=False)
-    content = db.Column(db.String)
+    comments = db.Column(db.String)
+    messages_ids = db.Column(db.String)
 
     def __repr__(self):
         return (f'id={self.id}, id_staff={self.id_staff}, id_client={self.id_client}, id_status={self.id_status}, '
                 f'id_urgency={self.id_urgency}, created_date={self.created_date}, subject={self.subject}, '
-                f'content={self.content}')
+                f'content={self.comments}, messages_ids={self.messages_ids}')
 
 
 class TicketStatus(db.Model):
@@ -86,3 +87,27 @@ class TicketUrgency(db.Model):
 
     def __repr__(self):
         return f'id={self.id}, urgency={self.urgency}'
+
+
+class Message(db.Model):
+    """Письма"""
+
+    id = db.Column(db.Integer, primary_key=True)
+    theme = db.Column(db.String, nullable=False)
+    id_client = db.Column(db.Integer, db.ForeignKey('client.id'), nullable=False)
+    received_date = db.Column(db.Datetime, nullable=False)
+    is_incoming = db.Column(db.Boolean, nullable=False)
+    content = db.Column(db.String, nullable=False)
+    attachments_ids = db.Column(db.String, nullable=True)
+
+    def __repr__(self):
+        return f'id={self.id}, ' \
+               f'theme={self.theme}, ' \
+               f'id_client={self.id_client}, ' \
+               f'received_date={self.received_date}, ' \
+               f'is_incoming={self.is_incoming}, ' \
+               f'content={self.content}, ' \
+               f'attachments_ids={self.attachments_ids}'
+
+
+
