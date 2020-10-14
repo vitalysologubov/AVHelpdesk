@@ -1,23 +1,16 @@
 import json
-from webapp.models import db, Client, Departament, Staff, TicketStatus, TicketUrgency
+from webapp.models import db, Client, Department, Staff, TicketStatus, TicketUrgency
 from webapp import create_app
 
 
 app = create_app()
 
 with app.app_context():
-    with open('fixtures/client.json', 'r', encoding='utf-8') as f:
-        clients = json.load(f)[0]['records']
+    with open('fixtures/department.json', 'r', encoding='utf-8') as f:
+        departments = json.load(f)[0]['records']
 
-        for client in clients:
-            data = Client(**client)
-            db.session.add(data)
-
-    with open('fixtures/departament.json', 'r', encoding='utf-8') as f:
-        departaments = json.load(f)[0]['records']
-
-        for departament in departaments:
-            data = Departament(**departament)
+        for department in departments:
+            data = Department(**department)
             db.session.add(data)
 
     with open('fixtures/staff.json', 'r', encoding='utf-8') as f:

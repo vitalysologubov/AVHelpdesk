@@ -3,7 +3,7 @@ from unittest import mock, TestCase
 from webapp import av_mail
 from webapp import create_app
 from webapp.add_tickets import add_ticket, get_or_create_client_by_email
-from webapp.models import Ticket
+from webapp.models import Message, Ticket
 from webapp.send_email import send_email
 
 
@@ -60,8 +60,8 @@ def messages():
     return messages
 
 
-def test_add_ticket(messages):
-    """Тестирование создания заявки"""
+def test_add_email(messages):
+    """Тестирование добавления писем"""
 
     with app.app_context():
         av_mail.fetch_mail = mock.MagicMock(return_value=messages)
@@ -69,9 +69,9 @@ def test_add_ticket(messages):
         add_ticket(messages)
 
         for message in messages:
-            task = Ticket.query.filter(
-                Ticket.subject == message['subject'], Ticket.content == message['body']
-            ).order_by(Ticket.id.desc()).first()
+            email = Message.query.filter(
+                Message.theme == message['subject'], Message.content == message['body']
+            ).order_by(Message.id.desc()).first()
 
-            assert message['subject'] == task.subject
-            assert message['body'] == task.content
+            assert message['subject'] == email.theme
+            assert message['body'] == email.content
