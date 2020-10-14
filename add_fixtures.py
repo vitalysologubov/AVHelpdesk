@@ -1,5 +1,5 @@
 import json
-from webapp.models import db, Client, Departament, Staff, TicketStatus, TicketUrgency
+from webapp.models import db, Client, Department, Staff, TicketStatus, TicketUrgency
 from webapp import create_app
 
 
@@ -17,7 +17,7 @@ with app.app_context():
         departaments = json.load(f)[0]['records']
 
         for departament in departaments:
-            data = Departament(**departament)
+            data = Department(**departament)
             db.session.add(data)
 
     with open('fixtures/staff.json', 'r', encoding='utf-8') as f:
