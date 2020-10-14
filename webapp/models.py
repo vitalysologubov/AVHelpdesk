@@ -96,7 +96,7 @@ class Message(db.Model):
     theme = db.Column(db.String, nullable=False)
     id_client = db.Column(db.Integer, db.ForeignKey('client.id'), nullable=False),
     id_ticket = db.Column(db.Integer, db.ForeignKey('ticket.id'), nullable=False)
-    received_date = db.Column(db.Datetime, nullable=False)
+    received_date = db.Column(db.DateTime, nullable=False)
     is_incoming = db.Column(db.Boolean, nullable=False)
     content = db.Column(db.String, nullable=False)
     attachments = db.relationship('Attachment', backref='message', lazy=True)
