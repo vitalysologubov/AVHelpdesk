@@ -1,7 +1,7 @@
 import smtplib
 import socket
 import ssl
-from webapp.config import EMAIL_SENDER, SMTP_PASSWORD, SMTP_SERVER
+from webapp.config import SMTP_PASSWORD, SMTP_SERVER, EMAIL_SENDER
 
 
 def create_body(receiver, subject, message):
@@ -30,4 +30,4 @@ def send_email(receiver, subject, message):
     except (smtplib.SMTPAuthenticationError, smtplib.SMTPRecipientsRefused, socket.gaierror) as error:
         return f'Ошибка отправки сообщения: {error}'
 
-    return 'Сообщене отправлено'
+    return 'Сообщение отправлено'

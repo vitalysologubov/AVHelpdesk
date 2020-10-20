@@ -20,3 +20,5 @@ if os.path.exists(dotenv_path):
     SMTP_PASSWORD = os.getenv('SMTP_PASSWORD')
     EMAIL_SENDER = os.getenv('EMAIL_SENDER')
     SECRET_KEY = os.getenv('SECRET_KEY')
+else:
+    print('Can not obtain environment variables')

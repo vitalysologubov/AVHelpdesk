@@ -72,7 +72,7 @@ def mail_connection():
     import imaplib
     from dotenv import load_dotenv
     mail = None
-    dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+    dotenv_path = os.path.join(os.path.dirname(__file__), 'webapp/.env')
     if os.path.exists(dotenv_path):
         load_dotenv(dotenv_path)
         ssl_address = os.getenv('SSL_ADDRESS')
