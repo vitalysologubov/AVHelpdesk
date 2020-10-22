@@ -1,6 +1,6 @@
 [
     {
-        "model": "Departament",
+        "model": "Department",
         "records": [{
             "name": "Отдел разработки"
         },

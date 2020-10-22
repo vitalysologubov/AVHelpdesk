@@ -1,5 +1,6 @@
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.ext.hybrid import hybrid_property
 
 
 db = SQLAlchemy()
@@ -60,13 +61,17 @@ class Ticket(db.Model):
     id_urgency = db.Column(db.Integer, db.ForeignKey('ticket_urgency.id'), nullable=False, default=2)
     created_date = db.Column(db.DateTime, nullable=True, default=datetime.now)
     subject = db.Column(db.String, nullable=False)
+    description = db.Column(db.String)
     comments = db.Column(db.String)
     messages = db.relationship('Message', backref='ticket', lazy=True)
 
+    @hybrid_property
+    def full_subject(self):
+        return f'Helpdesk ticket {self.id}: {self.subject}'
+
     def __repr__(self):
         return (f'id={self.id}, id_staff={self.id_staff}, id_client={self.id_client}, id_status={self.id_status}, '
-                f'id_urgency={self.id_urgency}, created_date={self.created_date}, subject={self.subject}, '
-                f'content={self.comments}')
+                f'id_urgency={self.id_urgency}, created_date={self.created_date}, subject={self.subject}')
 
 
 class TicketStatus(db.Model):
@@ -94,9 +99,9 @@ class Message(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     theme = db.Column(db.String, nullable=False)
-    id_client = db.Column(db.Integer, db.ForeignKey('client.id'), nullable=False),
+    id_client = db.Column(db.Integer, db.ForeignKey('client.id'), nullable=False)
     id_ticket = db.Column(db.Integer, db.ForeignKey('ticket.id'), nullable=False)
-    received_date = db.Column(db.DateTime, nullable=False)
+    received_date = db.Column(db.DateTime, nullable=True, default=datetime.now)
     is_incoming = db.Column(db.Boolean, nullable=False)
     content = db.Column(db.String, nullable=False)
     attachments = db.relationship('Attachment', backref='message', lazy=True)
@@ -104,6 +109,3 @@ class Message(db.Model):
     def __repr__(self):
         return (f'id={self.id}', f'theme={self.theme}', f'id_client={self.id_client}',
                 f'received_date={self.received_date}', f'is_incoming={self.is_incoming}', f'content={self.content}')
-
-
-

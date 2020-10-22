@@ -2,27 +2,27 @@
     {
         "model": "Staff",
         "records": [{
-            "id_departament": 1,
+            "id_department": 1,
             "name": "Елена Иванова",
             "status": 0
         },
         {
-            "id_departament": 1,
+            "id_department": 1,
             "name": "Степан Ларин",
             "status": 0
         },
         {
-            "id_departament": 1,
+            "id_department": 1,
             "name": "Другов Велор",
             "status": 0
         },
         {
-            "id_departament": 2,
+            "id_department": 2,
             "name": "Вероника Медведева",
             "status": 0
         },
         {
-            "id_departament": 3,
+            "id_department": 3,
             "name": "Алексей Орлов",
             "status": 0
         }
