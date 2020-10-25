@@ -1,9 +1,11 @@
-import os
-from dotenv import load_dotenv
 import email
 import imaplib
-from email.header import decode_header
+import random
+import os
 from bs4 import BeautifulSoup
+from dotenv import load_dotenv
+from email.header import decode_header
+from time import strftime
 
 
 def remove_tags(html_code):
@@ -91,6 +93,29 @@ def obtain_html_body(message):
             return remove_tags(message.get_payload(decode=True).decode('utf-8'))
 
 
+def fetch_attachment(email_message):
+    """
+    Обработка вложений
+    """
+
+    attachments = []
+
+    for part in email_message.walk():
+        file_name = part.get_filename()
+
+        if file_name:
+            file_extension = os.path.splitext(file_name)[1]
+            random_value = "".join(random.choice("abcdefghijklmnopqrstuvwxyz0123456789") for i in range(10))
+            file_name = f'{strftime("%Y%m%d%H%M%S")}_{random_value}{file_extension}'
+            attachments.append(file_name)
+            file_path = os.path.join('webapp/attachments/', file_name)
+
+            with open(file_path, 'wb') as fp:
+                fp.write(part.get_payload(decode=True))
+
+    return attachments
+
+
 def fetch_mail():
     """
     Проход по почтовым сообщениям
@@ -107,12 +132,14 @@ def fetch_mail():
         email_message = email.message_from_string(raw_email_message_string)
         address = email.utils.parseaddr(email_message['From'])[1]
         body = obtain_html_body(email_message)
+        attachments = fetch_attachment(email_message)
         mcd = dict(
             address=address,
             author=decode_mail_header(email_message['From']),
             received=email_message['Date'],
             subject=decode_mail_header(email_message['Subject']),
-            body=body
+            body=body,
+            attachments=attachments
         )
         msg_list.append(mcd)
 
