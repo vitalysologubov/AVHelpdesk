@@ -82,9 +82,11 @@ def obtain_html_body(message):
     body = []
     if message.is_multipart():
         for payload in message.get_payload():
-            new_part = obtain_html_body(payload).strip()
-            if new_part not in body:
-                body.append(new_part)
+            content_type = payload.get_content_type()
+            if content_type == 'text/plain':
+                new_part = obtain_html_body(payload).strip()
+                if new_part not in body:
+                    body.append(new_part)
         return remove_tags(" ".join(body))
     else:
         if not is_needs_to_decode(message.get_payload()):
