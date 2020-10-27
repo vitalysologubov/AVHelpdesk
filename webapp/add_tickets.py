@@ -1,6 +1,6 @@
 import re
 from flask_sqlalchemy import sqlalchemy
-from webapp.models import db, Client, Message, Ticket
+from webapp.models import db, Attachment, Client, Message, Ticket
 
 
 def get_or_create_client_by_email(name, email):
@@ -23,6 +23,7 @@ def add_ticket(messages):
     привязанное к этой заявке.
     Если тема письма содержит такую строку, то из неё извлекается ИД заявки и добавляется письмо, привязанное к нужной
     заявке.
+    При наличии в письме вложений, их имена файлов добавляются в БД с привязкой к письму.
     """
 
     for message in messages:
@@ -45,10 +46,10 @@ def add_ticket(messages):
             client_id = Ticket.query.filter(Ticket.id == ticket_id).first().id_client
 
         if ticket_id:
-            add_email(message["subject"], client_id, ticket_id, message['body'])
+            add_email(message["subject"], client_id, ticket_id, message['body'], message['attachments'])
 
 
-def add_email(subject, client_id, ticket_id, content):
+def add_email(subject, client_id, ticket_id, content, attachments):
     """Добавление письма"""
 
     email = Message(theme=subject, id_client=client_id, id_ticket=ticket_id, is_incoming=True, content=content)
@@ -56,5 +57,19 @@ def add_email(subject, client_id, ticket_id, content):
     try:
         db.session.add(email)
         db.session.commit()
+        add_attachment(email.id, attachments)
     except sqlalchemy.exc.OperationalError as error:
         print(f'Не удалось добавить письмо от {message["address"]} с темой {message["subject"]}: {error}')
+
+
+def add_attachment(email_id, attachments):
+    """Добавление вложения"""
+
+    for attachment in attachments:
+        attachment = Attachment(id_message=email_id, attachment=attachment)
+
+        try:
+            db.session.add(attachment)
+            db.session.commit()
+        except sqlalchemy.exc.OperationalError as error:
+            print(f'Не удалось добавить вложение от {message["address"]} с темой {message["subject"]}: {error}')
