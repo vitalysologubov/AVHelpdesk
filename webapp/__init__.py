@@ -1,5 +1,5 @@
 from flask import flash,  Flask, redirect, render_template, url_for
-from flask_login import LoginManager, login_user, logout_user
+from flask_login import current_user, LoginManager, login_required, login_user, logout_user
 from flask_migrate import Migrate
 from webapp.add_tickets import add_ticket
 from webapp.av_mail import fetch_mail
@@ -37,6 +37,8 @@ def create_app():
 
     @app.route('/login', methods=['GET', 'POST'])
     def login():
+        if current_user.is_authenticated:
+            return redirect(url_for('index'))
         title = 'Авторизация'
         login_form = LoginForm()
         return render_template('login_form.html', page_title=title, form=login_form)
@@ -55,10 +57,12 @@ def create_app():
 
     @app.route('/logout')
     def logout():
+        flash('Вы вышли из личного кабинета')
         logout_user()
         return redirect(url_for('index'))
 
     @app.route('/send')
+    @login_required
     def email_form():
         """Форма отправки email"""
 
