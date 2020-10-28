@@ -58,7 +58,11 @@ class Staff(db.Model, UserMixin):
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
-    
+
+    @property
+    def is_admin(self):
+        return self.role == 2
+
 
 class Ticket(db.Model):
     """Заявки"""
