@@ -1,10 +1,11 @@
 from flask import flash, Flask, redirect, render_template, url_for
 from flask_login import current_user, LoginManager, login_required, login_user, logout_user
 from flask_migrate import Migrate
+from sqlalchemy import and_
 from webapp.add_tickets import add_ticket
 from webapp.av_mail import fetch_mail
 from webapp.forms import SendForm, LoginForm
-from webapp.models import db, Staff
+from webapp.models import db, Staff, Ticket, TicketStatus, TicketUrgency
 from webapp.send_email import send_email
 
 
@@ -81,5 +82,22 @@ def create_app():
             flash(message)
 
             return redirect(url_for('email_form'))
+
+    @app.route('/tickets')
+    def tickets():
+        """Список всех заявок"""
+
+        tickets = db.session.query(
+            Ticket.id,
+            Ticket.created_date,
+            Ticket.subject,
+            TicketUrgency.urgency,
+            TicketStatus.status
+        ).filter(and_(
+            Ticket.id_urgency == TicketUrgency.id,
+            Ticket.id_status == TicketStatus.id)
+        ).all()
+
+        return render_template('tickets.html', title="Заявки", tickets=tickets)
 
     return app
