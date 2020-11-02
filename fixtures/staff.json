@@ -3,29 +3,40 @@
         "model": "Staff",
         "records": [{
             "id_department": 1,
-            "name": "Елена Иванова",
+            "name": "Администратор",
+            "username": "administrator",
+            "password": "pbkdf2:sha256:150000$xsMhWVZ6$5ecfa72c227b5126671a71e89571157ccf3d94d508a3c6d3ff658a2e190c686e",
+            "role": "Администратор",
             "status": 0
         },
         {
             "id_department": 1,
             "name": "Степан Ларин",
-            "status": 0
-        },
+            "username": "stepanlarin",
+            "password": "pbkdf2:sha256:150000$xsMhWVZ6$5ecfa72c227b5126671a71e89571157ccf3d94d508a3c6d3ff658a2e190c686e",
+            "role": "Сотрудник",
+            "status": 0        },
         {
             "id_department": 1,
             "name": "Другов Велор",
-            "status": 0
-        },
+            "username": "drugovvelor",
+            "password": "pbkdf2:sha256:150000$xsMhWVZ6$5ecfa72c227b5126671a71e89571157ccf3d94d508a3c6d3ff658a2e190c686e",
+            "role": "Сотрудник",
+            "status": 0        },
         {
             "id_department": 2,
             "name": "Вероника Медведева",
-            "status": 0
-        },
+            "username": "veronikamedvedeva",
+            "password": "pbkdf2:sha256:150000$xsMhWVZ6$5ecfa72c227b5126671a71e89571157ccf3d94d508a3c6d3ff658a2e190c686e",
+            "role": "Сотрудник",
+            "status": 0        },
         {
             "id_department": 3,
             "name": "Алексей Орлов",
-            "status": 0
-        }
+            "username": "alekseyorlov",
+            "password": "pbkdf2:sha256:150000$xsMhWVZ6$5ecfa72c227b5126671a71e89571157ccf3d94d508a3c6d3ff658a2e190c686e",
+            "role": "Сотрудник",
+            "status": 0        }
         ]
     }
 ]
