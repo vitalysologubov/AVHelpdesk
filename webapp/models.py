@@ -1,7 +1,8 @@
 from datetime import datetime
+from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.hybrid import hybrid_property
-
+from werkzeug.security import check_password_hash, generate_password_hash
 
 db = SQLAlchemy()
 
@@ -39,16 +40,29 @@ class Department(db.Model):
         return f'id={self.id}, name={self.name}'
 
 
-class Staff(db.Model):
+class Staff(db.Model, UserMixin):
     """Сотрудники"""
 
     id = db.Column(db.Integer, primary_key=True)
     id_department = db.Column(db.Integer, db.ForeignKey('department.id'), nullable=False)
     name = db.Column(db.String, nullable=False)
+    username = db.Column(db.String(64), index=True, unique=True)
+    password = db.Column(db.String(128))
+    role = db.Column(db.String(10), index=True)
     status = db.Column(db.Boolean, nullable=False)
 
     def __repr__(self):
         return f'id={self.id}, id_department={self.id_department}, name={self.name}, status={self.status}'
+
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
+
+    @property
+    def is_admin(self):
+        return self.role == 'admin'
 
 
 class Ticket(db.Model):

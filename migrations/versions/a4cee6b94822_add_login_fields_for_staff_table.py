@@ -1,8 +1,8 @@
-"""creating tables
+"""Add login fields for Staff table
 
-Revision ID: 64a6f612c80d
+Revision ID: a4cee6b94822
 Revises: 
-Create Date: 2020-10-16 17:23:59.049943
+Create Date: 2020-11-01 13:21:22.371334
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '64a6f612c80d'
+revision = 'a4cee6b94822'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -44,10 +44,15 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('id_department', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
+    sa.Column('username', sa.String(length=64), nullable=True),
+    sa.Column('password', sa.String(length=128), nullable=True),
+    sa.Column('role', sa.String(length=10), nullable=True),
     sa.Column('status', sa.Boolean(), nullable=False),
     sa.ForeignKeyConstraint(['id_department'], ['department.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_index(op.f('ix_staff_role'), 'staff', ['role'], unique=False)
+    op.create_index(op.f('ix_staff_username'), 'staff', ['username'], unique=True)
     op.create_table('ticket',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('id_staff', sa.Integer(), nullable=True),
@@ -91,6 +96,8 @@ def downgrade():
     op.drop_table('attachment')
     op.drop_table('message')
     op.drop_table('ticket')
+    op.drop_index(op.f('ix_staff_username'), table_name='staff')
+    op.drop_index(op.f('ix_staff_role'), table_name='staff')
     op.drop_table('staff')
     op.drop_table('ticket_urgency')
     op.drop_table('ticket_status')
