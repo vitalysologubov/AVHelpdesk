@@ -62,7 +62,7 @@ class Staff(db.Model, UserMixin):
 
     @property
     def is_admin(self):
-        return self.role == 'admin'
+        return self.role == 'Администратор'
 
 
 class Ticket(db.Model):
