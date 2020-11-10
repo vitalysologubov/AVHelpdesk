@@ -4,7 +4,7 @@ from flask_migrate import Migrate
 from sqlalchemy import and_
 from webapp.add_tickets import add_ticket
 from webapp.av_mail import fetch_mail
-from webapp.forms import SendForm, LoginForm
+from webapp.forms import SendForm, LoginForm, AssignForm
 from webapp.models import db, Staff, Ticket, TicketStatus, TicketUrgency
 from webapp.send_email import send_email
 
@@ -84,6 +84,7 @@ def create_app():
             return redirect(url_for('email_form'))
 
     @app.route('/tickets')
+    @login_required
     def tickets():
         """Список всех заявок"""
 
@@ -98,6 +99,15 @@ def create_app():
             Ticket.id_status == TicketStatus.id)
         ).all()
 
-        return render_template('tickets.html', title="Заявки", tickets=tickets)
+        if current_user.is_admin:
+            employees = db.session.query(
+                Staff.id,
+                Staff.name
+            ).all()
+        else:
+            employees = [current_user]
+        form = AssignForm()
+        form.selection.choices = [(e.id, e.name) for e in employees]
+        return render_template('tickets.html', title="Заявки", tickets=tickets, form=form)
 
     return app
