@@ -67,10 +67,7 @@
                         <br />
                     {% endfor %}
                 </div>
-                <form action="{{
-                                url_for('reply_ticket', ticket_id=ticket[0], subject=ticket[5], client_id=ticket[6],
-                                client_email=ticket[7])
-                    }}" method="POST">
+                <form action="{{ url_for('reply_ticket', ticket_id=ticket[0]) }}" method="POST">
                     <div class="col-sm-10">
                         {{ form.reply() }}
                         <br/>

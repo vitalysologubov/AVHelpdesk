@@ -6,7 +6,7 @@ from webapp.add_tickets import add_ticket
 from webapp.av_mail import fetch_mail
 from webapp.forms import LoginForm, TicketForm, TicketsForm
 from webapp.send_email import send_email
-from webapp.models import db, Client, Message, Staff, Ticket, TicketStatus, TicketUrgency
+from webapp.models import db, Client, Message, Staff, Ticket, TicketStatus, TicketUrgency, CLOSED
 
 
 def create_app():
@@ -131,19 +131,20 @@ def create_app():
             'ticket_form.html', title="AVHelpdesk", form=ticket_form, ticket=ticket, messages=messages
         )
 
-    @app.route('/reply_ticket/<ticket_id>/<subject>/<client_id>/<client_email>', methods=['POST'])
-    def reply_ticket(ticket_id, subject, client_id, client_email):
+    @app.route('/reply_ticket/<ticket_id>', methods=['POST'])
+    def reply_ticket(ticket_id):
         """Отправка ответа по заявке"""
 
         ticket_form = TicketForm()
         message = ticket_form.reply.data
-
-        check_subject = re.search(r'Helpdesk ticket \d+', subject)
+        ticket = db.session.query(Ticket).get(ticket_id)
+        client = db.session.query(Client).get(ticket.id_client)
+        check_subject = re.search(r'Helpdesk ticket \d+', ticket.subject)
 
         if check_subject is None:
-            subject = f'Helpdesk ticket {ticket_id}: ' + subject
+            subject = f'Helpdesk ticket {ticket_id}: ' + ticket.subject
 
-        message = send_email(client_email, subject, message, ticket_id, client_id)
+        message = send_email(client.email, subject, message, ticket_id, ticket.id_client)
         flash(message)
 
         return redirect(url_for('ticket', ticket_id=ticket_id))
@@ -152,8 +153,8 @@ def create_app():
     def close_ticket(ticket_id):
         """Закрытие заявки"""
 
-        ticket = Ticket.query.filter(Ticket.id == ticket_id).first()
-        ticket.id_status = 4
+        ticket = db.session.query(Ticket).get(ticket_id)
+        ticket.id_status = CLOSED
         db.session.commit()
 
         return redirect(url_for('index'))

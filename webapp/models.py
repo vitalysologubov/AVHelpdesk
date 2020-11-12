@@ -6,6 +6,12 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 db = SQLAlchemy()
 
+# Статусы заявок
+NOT_ASSIGNED = 1
+ASSIGNED = 2
+IN_PROCESS = 3
+CLOSED = 4
+
 
 class Attachment(db.Model):
     """Вложения"""
