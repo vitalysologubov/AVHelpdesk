@@ -21,9 +21,9 @@
                     <li><a href="#">База знаний</a></li>
                     <li><a href="#">Статистика</a></li>
                 </ul>
-                    <form action="{{ url_for('logout') }}" method="GET">
-                        {{ form.submit_logout() }}
-                    </form>
+                <form action="{{ url_for('logout') }}" method="GET">
+                    {{ form.submit_logout() }}
+                </form>
             </div>
         </nav>
         <div class="container">  
@@ -79,6 +79,15 @@
                 <form action="{{ url_for('close_ticket', ticket_id=ticket[0]) }}">
                     <div class="col-sm-2">
                         <p>{{ form.submit_close() }}</p>
+                    </div>
+                </form>
+                <form action="{{ url_for('assign_staff', ticket_id=ticket[0]) }}" method="POST">
+                    <div class="col-sm-2">
+                        <hr />
+                        {{ form.selection }}
+                        <br />
+                        <br />
+                        {{ form.submit_assign() }}
                     </div>
                 </form>
             </div>
