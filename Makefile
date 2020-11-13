@@ -3,7 +3,7 @@ init-app:
 	@export FLASK_APP=webapp
 
 run-app:	
-	@echo Runing app
+	@echo Running app
 	@export FLASK_APP=webapp && FLASK_ENV=development && set FLASK_DEBUG=1 && flask run
 
 create-migrations:

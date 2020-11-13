@@ -4,7 +4,8 @@ from flask_login import current_user, LoginManager, login_user, logout_user
 from flask_migrate import Migrate
 from webapp.add_tickets import add_ticket
 from webapp.av_mail import fetch_mail
-from webapp.forms import LoginForm, TicketForm, TicketsForm
+from webapp.models import db, Staff, Ticket, TicketStatus, TicketUrgency
+from webapp.forms import AssignForm, LoginForm, SendForm, TicketForm, TicketsForm
 from webapp.send_email import send_email
 from webapp.models import db, Client, Message, Staff, Ticket, TicketStatus, TicketUrgency, CLOSED
 
@@ -167,5 +168,55 @@ def create_app():
         add_ticket(messages)
 
         return 'Письма загружены'
+
+    @app.route('/send')
+    @login_required
+    def email_form():
+        """Форма отправки email"""
+        if current_user.is_admin:
+            form = SendForm()
+            return render_template('email_form.html', title='Отправка email', form=form)
+
+    @app.route('/email_process', methods=['POST'])
+    def email_process():
+        """Процесс отправки email"""
+
+        form = SendForm()
+        subject = 'Тестовая тема'
+        message = 'Тестовое сообщение'
+
+        if form.validate_on_submit():
+            receiver = form.email.data
+            message = send_email(receiver, subject, message)
+            flash(message)
+
+            return redirect(url_for('email_form'))
+
+    @app.route('/tickets')
+    @login_required
+    def tickets():
+        """Список всех заявок"""
+
+        tickets = db.session.query(
+            Ticket.id,
+            Ticket.created_date,
+            Ticket.subject,
+            TicketUrgency.urgency,
+            TicketStatus.status
+        ).filter(and_(
+            Ticket.id_urgency == TicketUrgency.id,
+            Ticket.id_status == TicketStatus.id)
+        ).all()
+
+        if current_user.is_admin:
+            employees = db.session.query(
+                Staff.id,
+                Staff.name
+            ).all()
+        else:
+            employees = [current_user]
+        form = AssignForm()
+        form.selection.choices = [(e.id, e.name) for e in employees]
+        return render_template('tickets.html', title="Заявки", tickets=tickets, form=form)
 
     return app

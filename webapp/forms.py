@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+from wtforms import BooleanField, PasswordField, StringField, SubmitField, SelectField
 from wtforms import PasswordField, StringField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired
 
@@ -30,3 +31,7 @@ class TicketForm(FlaskForm):
     submit_logout = SubmitField('Выйти', render_kw={'class': 'btn btn-danger navbar-btn'})
     submit_send = SubmitField('Отправить ответ', render_kw={'class': 'btn btn-primary btn-block'})
     submit_close = SubmitField('Закрыть заявку', render_kw={'class': 'btn btn-success btn-block'})
+
+class AssignForm(FlaskForm):
+
+    selection = SelectField(u'Executor', coerce=int)
