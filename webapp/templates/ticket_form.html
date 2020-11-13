@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <title>{{ title }}</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>       
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="{{ url_for('index') }}">{{ title }}</a>
+                </div>
+                <ul class="nav navbar-nav">
+                    <li><a href="#">Заявки</a></li>
+                    <li><a href="#">Сотрудники</a></li>
+                    <li><a href="#">Клиенты</a></li>
+                    <li><a href="#">База знаний</a></li>
+                    <li><a href="#">Статистика</a></li>
+                </ul>
+                    <form action="{{ url_for('logout') }}" method="GET">
+                        {{ form.submit_logout() }}
+                    </form>
+            </div>
+        </nav>
+        <div class="container">  
+            <div class="row">                
+                <div class="col-sm-4">
+                    {{ form.client_name.label }}
+                    {{ form.client_name(value=ticket[1]) }}
+                    <br/>
+                    {{ form.staff_name.label }}
+                    {{ form.staff_name(value=ticket[2]) }}
+                </div>
+                <div class="col-sm-4">
+                    {{ form.created_date.label }}
+                    {{ form.created_date(value=ticket[3].strftime('%d.%m.%Y')) }}
+                    <br/>
+                    {{ form.urgency.label }}
+                    {{ form.urgency(value=ticket[4]) }}
+                </div>
+                <div class="col-sm-4">
+                    <label for="comment">Комментарии:</label>
+                    <textarea class="form-control" rows="5" style="resize: none;"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="container">  
+            <div class="row">                
+                <div class="col-sm-12">
+                    <br/>
+                    {{ form.subject.label }}
+                    {{ form.subject(value=ticket[5]) }}
+                    <br />
+                </div>
+                <div class="col-sm-12">
+                    {% for message in messages %}
+                        {% if message[0] %}
+                            <p style="background-color:greenyellow;">{{ ticket[1] + ': ' }}</p> {{ message[1] }}
+                        {% else %}
+                            <p style="background-color:greenyellow;">{{ ticket[2] + ': ' }}</p> {{ message[1] }}
+                        {% endif %}
+                        <br />
+                        <br />
+                    {% endfor %}
+                </div>
+                <form action="{{ url_for('reply_ticket', ticket_id=ticket[0]) }}" method="POST">
+                    <div class="col-sm-10">
+                        {{ form.reply() }}
+                        <br/>
+                    </div>
+                    <div class="col-sm-2">
+                        <p>{{ form.submit_send() }}</p>
+                    </div>
+                </form>
+                <form action="{{ url_for('close_ticket', ticket_id=ticket[0]) }}">
+                    <div class="col-sm-2">
+                        <p>{{ form.submit_close() }}</p>
+                    </div>
+                </form>
+            </div>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="alert alert-warning" role="alert">
+                        {% for message in messages %}
+                            {{ message }}<br>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+        </div>
+    </body>
+</html>
