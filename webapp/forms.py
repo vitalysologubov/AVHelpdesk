@@ -32,6 +32,13 @@ class TicketForm(FlaskForm):
     submit_send = SubmitField('Отправить ответ', render_kw={'class': 'btn btn-primary btn-block'})
     submit_close = SubmitField('Закрыть заявку', render_kw={'class': 'btn btn-success btn-block'})
 
-class AssignForm(FlaskForm):
 
+class AssignForm(FlaskForm):
     selection = SelectField(u'Executor', coerce=int)
+
+
+class SendForm(FlaskForm):
+    """Форма отправки email"""
+
+    email = StringField('Email:', validators=[DataRequired()], render_kw={'class': 'form-control'})
+    submit = SubmitField('Отправить', render_kw={'class': 'btn btn-primary'})

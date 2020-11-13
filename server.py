@@ -1,5 +1,5 @@
 from flask import Flask, Response
-from av_mail import fetch_mail
+from webapp.av_mail import fetch_mail
 app = Flask(__name__)
 
 
