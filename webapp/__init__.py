@@ -7,9 +7,9 @@ from sqlalchemy import and_
 from webapp.add_tickets import add_ticket
 from webapp.av_mail import fetch_mail
 from webapp.models import db, Staff, Ticket, TicketStatus, TicketUrgency
-from webapp.forms import AssignForm, LoginForm, SendForm, TicketForm, TicketsForm
+from webapp.forms import LoginForm, SendForm, TicketForm, TicketsForm
 from webapp.send_email import send_email
-from webapp.models import db, Client, Message, Staff, Ticket, TicketStatus, TicketUrgency, CLOSED
+from webapp.models import db, Client, Message, Staff, Ticket, TicketStatus, TicketUrgency, ASSIGNED, CLOSED
 
 
 def create_app():
@@ -128,7 +128,18 @@ def create_app():
             ).first()
 
         messages = db.session.query(Message.is_incoming, Message.content).filter(Message.id_ticket == ticket_id).all()
+
+        if current_user.is_admin:
+
+            employees = db.session.query(
+                Staff.id,
+                Staff.name
+            ).all()
+        else:
+            employees = [current_user]
+
         ticket_form = TicketForm()
+        ticket_form.selection.choices = [(e.id, e.name) for e in employees]
 
         return render_template(
             'ticket_form.html', title="AVHelpdesk", form=ticket_form, ticket=ticket, messages=messages
@@ -162,6 +173,20 @@ def create_app():
 
         return redirect(url_for('index'))
 
+    @app.route('/assign_staff/<ticket_id>', methods=['POST'])
+    def assign_staff(ticket_id):
+        """Назначение сотрудника"""
+
+        ticket_form = TicketForm()
+        staff_id = ticket_form.selection.data
+
+        ticket = db.session.query(Ticket).get(ticket_id)
+        ticket.id_staff = staff_id
+        ticket.id_status = ASSIGNED
+        db.session.commit()
+
+        return redirect(url_for('index'))
+
     @app.route('/get_email')
     def get_email():
         """Загрузка писем от клиентов. При работе с celery функция будет неактуальна"""
@@ -170,55 +195,5 @@ def create_app():
         add_ticket(messages)
 
         return 'Письма загружены'
-
-    @app.route('/send')
-    @login_required
-    def email_form():
-        """Форма отправки email"""
-        if current_user.is_admin:
-            form = SendForm()
-            return render_template('email_form.html', title='Отправка email', form=form)
-
-    @app.route('/email_process', methods=['POST'])
-    def email_process():
-        """Процесс отправки email"""
-
-        form = SendForm()
-        subject = 'Тестовая тема'
-        message = 'Тестовое сообщение'
-
-        if form.validate_on_submit():
-            receiver = form.email.data
-            message = send_email(receiver, subject, message)
-            flash(message)
-
-            return redirect(url_for('email_form'))
-
-    @app.route('/tickets')
-    @login_required
-    def tickets():
-        """Список всех заявок"""
-
-        tickets = db.session.query(
-            Ticket.id,
-            Ticket.created_date,
-            Ticket.subject,
-            TicketUrgency.urgency,
-            TicketStatus.status
-        ).filter(and_(
-            Ticket.id_urgency == TicketUrgency.id,
-            Ticket.id_status == TicketStatus.id)
-        ).all()
-
-        if current_user.is_admin:
-            employees = db.session.query(
-                Staff.id,
-                Staff.name
-            ).all()
-        else:
-            employees = [current_user]
-        form = AssignForm()
-        form.selection.choices = [(e.id, e.name) for e in employees]
-        return render_template('tickets.html', title="Заявки", tickets=tickets, form=form)
 
     return app
