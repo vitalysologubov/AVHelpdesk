@@ -1,8 +1,7 @@
 import re
 from flask import flash, Flask, redirect, render_template, url_for
-from flask_login import current_user, LoginManager, login_user, logout_user, login_required
+from flask_login import current_user, LoginManager, login_user, logout_user
 from flask_migrate import Migrate
-from sqlalchemy import and_
 
 from webapp.add_tickets import add_ticket
 from webapp.av_mail import fetch_mail
