@@ -59,7 +59,7 @@ def add_email(subject, client_id, ticket_id, content, attachments):
         db.session.commit()
         add_attachment(email.id, attachments)
     except sqlalchemy.exc.OperationalError as error:
-        print(f'Не удалось добавить письмо от {message["address"]} с темой {message["subject"]}: {error}')
+        print(f'Не удалось добавить письмо с темой {subject}: {error}')
 
 
 def add_attachment(email_id, attachments):
@@ -72,4 +72,4 @@ def add_attachment(email_id, attachments):
             db.session.add(attachment)
             db.session.commit()
         except sqlalchemy.exc.OperationalError as error:
-            print(f'Не удалось добавить вложение от {message["address"]} с темой {message["subject"]}: {error}')
+            print(f'Не удалось добавить вложение от {email_id}: {error}')

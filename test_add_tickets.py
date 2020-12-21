@@ -3,7 +3,7 @@ from unittest import mock, TestCase
 from webapp import av_mail
 from webapp import create_app
 from webapp.add_tickets import add_ticket, get_or_create_client_by_email
-from webapp.models import Message, Ticket
+from webapp.models import Message
 from webapp.send_email import send_email
 
 
@@ -16,7 +16,7 @@ class TestSendEmail(TestCase):
     @mock.patch('smtplib.SMTP_SSL')
     def test_send_email(self, mock_send_email):
         with app.app_context():
-            result = send_email('test@client.com', 'TestSubject', 'TestMessage')
+            result = send_email('test@client.com', 'TestSubject', 'TestMessage', 1, 1)
             assert result == 'Сообщене отправлено'
 
 
@@ -46,14 +46,16 @@ def messages():
             'author': 'Ivan Ivanov',
             'received': 'Thu, 8 Oct 2020 21:24:58 +0300',
             'subject': 'Test subject 1',
-            'body': 'Test content 1'
+            'body': 'Test content 1',
+            'attachments': ['20201221171254_eu56veqr26.txt']
         },
         {
             'address': 'petrov@sender.com',
             'author': 'Petr Petrov',
             'received': 'Thu, 8 Oct 2020 22:11:45 +0300',
             'subject': 'Test subject 2',
-            'body': 'Test content 2'
+            'body': 'Test content 2',
+            'attachments': ['20201221171254_eu56veqr27.txt']
         }
     ]
 
