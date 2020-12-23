@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.hybrid import hybrid_property
 from werkzeug.security import check_password_hash, generate_password_hash
 
+
 db = SQLAlchemy()
 
 # Статусы заявок
@@ -21,7 +22,7 @@ class Attachment(db.Model):
     attachment = db.Column(db.String, nullable=False)
 
     def __repr__(self):
-        return f'id={self.id}, id_ticket={self.id_message}, attachment={self.attachment}'
+        return f'id={self.id}, id_message={self.id_message}, attachment={self.attachment}'
 
 
 class Client(db.Model):
@@ -58,7 +59,8 @@ class Staff(db.Model, UserMixin):
     status = db.Column(db.Boolean, nullable=False)
 
     def __repr__(self):
-        return f'id={self.id}, id_department={self.id_department}, name={self.name}, status={self.status}'
+        return (f'id={self.id}, id_department={self.id_department}, name={self.name}, username={self.username}, '
+                f'role={self.role} , status={self.status}')
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -91,7 +93,8 @@ class Ticket(db.Model):
 
     def __repr__(self):
         return (f'id={self.id}, id_staff={self.id_staff}, id_client={self.id_client}, id_status={self.id_status}, '
-                f'id_urgency={self.id_urgency}, created_date={self.created_date}, subject={self.subject}')
+                f'id_urgency={self.id_urgency}, created_date={self.created_date}, subject={self.subject}, '
+                f'description={self.description}, comments={self.comments}, messages={self.messages}')
 
 
 class TicketStatus(db.Model):
@@ -118,14 +121,15 @@ class Message(db.Model):
     """Письма"""
 
     id = db.Column(db.Integer, primary_key=True)
-    theme = db.Column(db.String, nullable=False)
     id_client = db.Column(db.Integer, db.ForeignKey('client.id'), nullable=False)
     id_ticket = db.Column(db.Integer, db.ForeignKey('ticket.id'), nullable=False)
     received_date = db.Column(db.DateTime, nullable=True, default=datetime.now)
     is_incoming = db.Column(db.Boolean, nullable=False)
+    subject = db.Column(db.String, nullable=False)
     content = db.Column(db.String, nullable=False)
     attachments = db.relationship('Attachment', backref='message', lazy=True)
 
     def __repr__(self):
-        return (f'id={self.id}', f'theme={self.theme}', f'id_client={self.id_client}',
-                f'received_date={self.received_date}', f'is_incoming={self.is_incoming}', f'content={self.content}')
+        return (f'id={self.id}, id_client={self.id_client}, id_ticket={self.id_ticket}, '
+                f'received_date={self.received_date}, is_incoming={self.is_incoming}, subject={self.subject}, '
+                f'content={self.content}, attachments={self.attachments}')
