@@ -1,8 +1,8 @@
-"""Add login fields for Staff table
+"""creating tables
 
-Revision ID: a4cee6b94822
+Revision ID: afe1e83120df
 Revises: 
-Create Date: 2020-11-01 13:21:22.371334
+Create Date: 2020-12-24 16:44:07.344433
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'a4cee6b94822'
+revision = 'afe1e83120df'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -71,11 +71,11 @@ def upgrade():
     )
     op.create_table('message',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('theme', sa.String(), nullable=False),
     sa.Column('id_client', sa.Integer(), nullable=False),
     sa.Column('id_ticket', sa.Integer(), nullable=False),
     sa.Column('received_date', sa.DateTime(), nullable=True),
     sa.Column('is_incoming', sa.Boolean(), nullable=False),
+    sa.Column('subject', sa.String(), nullable=False),
     sa.Column('content', sa.String(), nullable=False),
     sa.ForeignKeyConstraint(['id_client'], ['client.id'], ),
     sa.ForeignKeyConstraint(['id_ticket'], ['ticket.id'], ),
