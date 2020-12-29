@@ -1,5 +1,6 @@
 import re
 from flask_sqlalchemy import sqlalchemy
+
 from webapp.models import db, Attachment, Client, Message, Ticket
 
 
@@ -30,46 +31,47 @@ def add_ticket(messages):
         is_initial_email = re.search(r'Helpdesk ticket \d+', message['subject'])
 
         if is_initial_email is None:
-            client_id = get_or_create_client_by_email(message['author'], message['address']).id           
-            task = Ticket(id_client=client_id, subject=message['subject'], description=message['body'])
+            client_id = get_or_create_client_by_email(message['name'], message['email']).id
+            ticket = Ticket(id_client=client_id, subject=message['subject'], description=message['content'])
 
             try:
-                db.session.add(task)
+                db.session.add(ticket)
                 db.session.commit()
-                ticket_id = task.id
+                ticket_id = ticket.id
             except sqlalchemy.exc.OperationalError as error:
                 ticket_id = ""
-                print(f'Не удалось создать заявку от {message["address"]} с темой {message["subject"]}: {error}')
+                print(f'Не удалось создать заявку от "{message["email"]}" с темой "{message["subject"]}": {error}.')
         else:
             subject = is_initial_email.group(0)
             ticket_id = re.search(r'\d+', subject).group(0)
             client_id = Ticket.query.filter(Ticket.id == ticket_id).first().id_client
 
         if ticket_id:
-            add_email(message["subject"], client_id, ticket_id, message['body'], message['attachments'])
+            add_message(client_id, ticket_id, message["subject"], message['content'], message['attachments'])
 
 
-def add_email(subject, client_id, ticket_id, content, attachments):
-    """Добавление письма"""
+def add_message(client_id, ticket_id, subject, content, attachments):
+    """Добавление содержания письма"""
 
-    email = Message(theme=subject, id_client=client_id, id_ticket=ticket_id, is_incoming=True, content=content)
+    message = Message(id_client=client_id, id_ticket=ticket_id, is_incoming=True, subject=subject, content=content)
 
     try:
-        db.session.add(email)
+        db.session.add(message)
         db.session.commit()
-        add_attachment(email.id, attachments)
+        add_attachment(message.id, attachments)
     except sqlalchemy.exc.OperationalError as error:
-        print(f'Не удалось добавить письмо с темой {subject}: {error}')
+        print(
+            f'Не удалось добавить содержания письма от клиента "{client_id}" с темой "{message["subject"]}": {error}.')
 
 
-def add_attachment(email_id, attachments):
-    """Добавление вложения"""
+def add_attachment(message_id, attachments):
+    """Добавление вложения письма"""
 
     for attachment in attachments:
-        attachment = Attachment(id_message=email_id, attachment=attachment)
+        attachment = Attachment(id_message=message_id, attachment=attachment)
 
         try:
             db.session.add(attachment)
             db.session.commit()
         except sqlalchemy.exc.OperationalError as error:
-            print(f'Не удалось добавить вложение от {email_id}: {error}')
+            print(f'Не удалось добавить вложение для письма "{message_id}": {error}.')
