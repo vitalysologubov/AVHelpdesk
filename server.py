@@ -1,5 +1,6 @@
 from flask import Flask, Response
-from webapp.av_mail import fetch_mail
+from webapp.get_email import fetch_mail
+
 app = Flask(__name__)
 
 
