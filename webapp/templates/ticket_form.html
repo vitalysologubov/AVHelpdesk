@@ -61,7 +61,7 @@
                         {% if message[0] %}
                             <p style="background-color:greenyellow;">{{ ticket[1] + ': ' }}</p> {{ message[1] }}
                         {% else %}
-                            <p style="background-color:greenyellow;">{{ ticket[2] + ': ' }}</p> {{ message[1] }}
+                            <p style="background-color:greenyellow;">{{ ticket[2]|string + ': ' }}</p> {{ message[1] }}
                         {% endif %}
                         <br />
                         <br />

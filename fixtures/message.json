@@ -1,0 +1,12 @@
+[
+    {
+        "model": "Message",
+        "records": [{
+            "id_client": 1,
+            "id_ticket": 1,
+            "is_incoming": 0,
+            "subject": "Fixture subject",
+            "content": "Fixture content"
+        }]
+    }
+]

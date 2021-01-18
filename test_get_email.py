@@ -1,9 +1,11 @@
 import pytest
-import av_mail
+from webapp import get_email
 
 
 @pytest.fixture
 def message_generator():
+    """Генератор сообщений"""
+
     raw_email_string = b'''Received: from mxfront7g.mail.yandex.net (localhost [127.0.0.1])\r\n\t
     by mxfront7g.mail.yandex.net with LMTP id vu4jZ3bEoi-xn3f2MQM\r\n\t
     for <av-helpdesk@yandex.ru>; Sat, 26 Sep 2020 14:40:32 +0300\r\n
@@ -15,11 +17,11 @@ def message_generator():
     Return-Path: da070116@gmail.com\r\n
     X-Yandex-Front: mxfront7g.mail.yandex.net\r\n
     X-Yandex-TimeMark: 1601120431.832\r\n
-    
+
     Authentication-Results: mxfront7g.mail.yandex.net;
     spf=pass (mxfront7g.mail.yandex.net: domain of gmail.com designates 2a00:1450:4864:20::333 as permitted sender, 
     rule=[ip6:2a00:1450:4000::/36]) smtp.mail=da070116@gmail.com; dkim=pass header.i=@gmail.com\r\n
-    
+
     X-Yandex-Suid-Status: 1 1543103945\r\n
     X-Yandex-Spam: 1\r\n
     X-Yandex-Fwd: MTY2MzA3NTQwMzU2MDAwMzgwOTEsNzExMjA5MTQ4MjUyMTg4NDcyNA==\r\n
@@ -68,6 +70,8 @@ def message_generator():
 
 @pytest.fixture
 def mail_connection():
+    """Получение параметров подключения"""
+
     import os
     import imaplib
     from dotenv import load_dotenv
@@ -85,11 +89,15 @@ def mail_connection():
 
 
 def test_get_mailbox_entity():
-    entity = av_mail.get_mailbox_entity()
+    """Тестирование подключения"""
+
+    entity = get_email.get_mailbox_entity()
     assert entity.noop() == ('OK', [b'NOOP Completed.'])
 
 
 def test_is_needs_to_decode():
+    """Тестирование необходимости декодирования тела письма"""
+
     cyrillic_many_words = "Привет, мир!"
     cyrillic_one_word = "Привет!"
     latin_many_words = "Hello world!"
@@ -97,16 +105,18 @@ def test_is_needs_to_decode():
     encoded_string = """0J/RgNC40LLQtdGCLCDQvNC40YAh"""
     empty_string = ""
     spaced_string = "    "
-    assert av_mail.is_needs_to_decode(cyrillic_many_words) is False
-    assert av_mail.is_needs_to_decode(cyrillic_one_word) is False
-    assert av_mail.is_needs_to_decode(latin_many_words) is False
-    assert av_mail.is_needs_to_decode(latin_one_word) is False
-    assert av_mail.is_needs_to_decode(empty_string) is False
-    assert av_mail.is_needs_to_decode(spaced_string) is False
-    assert av_mail.is_needs_to_decode(encoded_string) is True
+    assert get_email.is_needs_to_decode(cyrillic_many_words) is False
+    assert get_email.is_needs_to_decode(cyrillic_one_word) is False
+    assert get_email.is_needs_to_decode(latin_many_words) is False
+    assert get_email.is_needs_to_decode(latin_one_word) is False
+    assert get_email.is_needs_to_decode(empty_string) is False
+    assert get_email.is_needs_to_decode(spaced_string) is False
+    assert get_email.is_needs_to_decode(encoded_string) is True
 
 
 def test_obtain_html_body():
+    """Тестирование получения тела письма"""
+
     cyrillic_many_words = "Привет, мир!"
     cyrillic_one_word = "Привет!"
     latin_many_words = "Hello world!"
@@ -115,4 +125,4 @@ def test_obtain_html_body():
     mail = mail_connection
     result, data = mail.search(None, "UNSEEN")
     id_list = (i for i in data[0].split()[::-1] if not i == ' ')
-    print(av_mail.obtain_html_body(cyrillic_many_words))
+    print(get_email.obtain_html_body(cyrillic_many_words))

@@ -4,7 +4,7 @@ from flask_login import current_user, LoginManager, login_user, logout_user
 from flask_migrate import Migrate
 
 from webapp.add_tickets import add_ticket
-from webapp.av_mail import fetch_mail
+from webapp.get_email import fetch_mail
 from webapp.models import db, Staff, Ticket, TicketStatus, TicketUrgency
 from webapp.forms import LoginForm, SendForm, TicketForm, TicketsForm
 from webapp.send_email import send_email
@@ -149,7 +149,7 @@ def create_app():
         """Отправка ответа по заявке"""
 
         ticket_form = TicketForm()
-        message = ticket_form.reply.data
+        content = ticket_form.reply.data
         ticket = db.session.query(Ticket).get(ticket_id)
         client = db.session.query(Client).get(ticket.id_client)
         check_subject = re.search(r'Helpdesk ticket \d+', ticket.subject)
@@ -157,7 +157,7 @@ def create_app():
         if check_subject is None:
             subject = f'Helpdesk ticket {ticket_id}: ' + ticket.subject
 
-        message = send_email(client.email, subject, message, ticket_id, ticket.id_client)
+        message = send_email(ticket_id, ticket.id_client, client.email, subject, content)
         flash(message)
 
         return redirect(url_for('ticket', ticket_id=ticket_id))

@@ -4,7 +4,7 @@
         "records": [{
             "id_department": 1,
             "name": "Администратор",
-            "username": "administrator",
+            "username": "admin",
             "password": "pbkdf2:sha256:150000$xsMhWVZ6$5ecfa72c227b5126671a71e89571157ccf3d94d508a3c6d3ff658a2e190c686e",
             "role": "Администратор",
             "status": 0

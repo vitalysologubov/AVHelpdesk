@@ -1,0 +1,10 @@
+[
+    {
+        "model": "Client",
+        "records": [{
+            "name": "Иван Петров",
+            "organization": "ООО \"Рога и копыта\"",
+            "email": "ivanpetrov@email.ru"
+        }]
+    }
+]
