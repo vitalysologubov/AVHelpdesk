@@ -1,5 +1,5 @@
 import re
-from flask_sqlalchemy import sqlalchemy
+from flask_sqlalchemy import SQLAlchemy
 
 from webapp.models import db, Attachment, Client, Message, Ticket
 
@@ -9,7 +9,7 @@ def get_or_create_client_by_email(name, email):
 
     try:
         client = Client.query.filter(Client.email == email).one()
-    except sqlalchemy.orm.exc.NoResultFound:
+    except SQLAlchemy.orm.exc.NoResultFound:
         client = Client(name=name, email=email)
         db.session.add(client)
         db.session.commit()
@@ -38,7 +38,7 @@ def add_ticket(messages):
                 db.session.add(ticket)
                 db.session.commit()
                 ticket_id = ticket.id
-            except sqlalchemy.exc.OperationalError as error:
+            except SQLAlchemy.exc.OperationalError as error:
                 ticket_id = ""
                 print(f'Не удалось создать заявку от "{message["email"]}" с темой "{message["subject"]}": {error}.')
         else:
@@ -59,7 +59,7 @@ def add_message(client_id, ticket_id, subject, content, attachments):
         db.session.add(message)
         db.session.commit()
         add_attachment(message.id, attachments)
-    except sqlalchemy.exc.OperationalError as error:
+    except SQLAlchemy.exc.OperationalError as error:
         print(
             f'Не удалось добавить содержания письма от клиента "{client_id}" с темой "{message["subject"]}": {error}.')
 
@@ -73,5 +73,5 @@ def add_attachment(message_id, attachments):
         try:
             db.session.add(attachment)
             db.session.commit()
-        except sqlalchemy.exc.OperationalError as error:
+        except SQLAlchemy.exc.OperationalError as error:
             print(f'Не удалось добавить вложение для письма "{message_id}": {error}.')

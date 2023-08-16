@@ -1,7 +1,7 @@
 import smtplib
 import socket
 import ssl
-from flask_sqlalchemy import sqlalchemy
+from flask_sqlalchemy import SQLAlchemy
 
 from webapp.config import EMAIL_PASSWORD, EMAIL_SENDER, SMTP_SERVER
 from webapp.models import db, Message
@@ -28,7 +28,7 @@ def save_email(client_id, ticket_id, subject, content):
     try:
         db.session.add(message)
         db.session.commit()
-    except sqlalchemy.exc.OperationalError as error:
+    except SQLAlchemy.exc.OperationalError as error:
         print(f'Не удалось добавить ответ на заявку с темой {subject}: {error}')
 
 
