@@ -1,0 +1,14 @@
+[
+    {
+        "model": "Ticket",
+        "records": [{
+            "id_staff": 2,
+            "id_client": 1,
+            "id_status": 2,
+            "id_urgency": 2,
+            "subject": "Fixture subject",
+            "description": "Fixture description",
+            "comments": "Fixture comments"
+        }]
+    }
+]

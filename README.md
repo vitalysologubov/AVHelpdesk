@@ -1,29 +1,35 @@
 ## About
-AVHelpdesk - система обработки заявок с технологией учёта рабочего времени.
+AVHelpdesk - система обработки заявок, поступающих от клиентов по электронной почте.
 
 
-## Using 
-* Flask 1.1.2
+## Using
 * Python 3.8
+* Flask 1.1.2
+* celery 5.0.0
 
 
-
-**Celery**
-
-обработка очереди: `celery -A tasks beat`
-
-**Команды Makefile:**
+**Makefile:**
 
 - `init-app` - инициализация приложения;
 - `run-app` - запуск приложения;
 - `create-migrations`- создание миграции базы данных;
 - `apply-migrations` - применение миграции базы данных;
-- `add-fixtures` - добавление фикстур в базу данных.
+- `add-fixtures-client` - добавление клиентов;
+- `add-fixtures-department` - добавление отделов;
+- `add-fixtures-staff` - добавление сотрудников;
+- `add-fixtures-ticket-status` - добавление статусов заявок;
+- `add-fixtures-ticket-urgency` - добавление срочности заявок;
+- `add-fixtures-ticket` - добавление заявок;
+- `add-fixtures-message` - добавление содержания писем;
+- `add-fixtures-all` - добавление всех фикстур.
 
 
-обработка очереди: `celery -A tasks beat`
-исполнитель:  `celery -A tasks worker --loglevel=INFO`
+**Celery**
+
+- `celery -A tasks beat` - обработка очереди;
+- `celery -A tasks worker --loglevel=INFO` - исполнитель.
 
 ## Credentials
+
 
 ## License

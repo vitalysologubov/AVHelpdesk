@@ -129,3 +129,6 @@ webapp.db
 
 # bat-files
 *.bat
+
+# setup
+setup.cfg

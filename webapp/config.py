@@ -17,6 +17,6 @@ dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
 if os.path.exists(dotenv_path):
     load_dotenv(dotenv_path)
     SMTP_SERVER = os.getenv('SMTP_SERVER')
-    SMTP_PASSWORD = os.getenv('SMTP_PASSWORD')
+    EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
     EMAIL_SENDER = os.getenv('EMAIL_SENDER')
     SECRET_KEY = os.getenv('SECRET_KEY')
